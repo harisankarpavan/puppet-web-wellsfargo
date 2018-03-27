@@ -42,12 +42,18 @@
 #
 # Copyright 2018 Your name here, unless otherwise noted.
 #
-class web {
+class web (
+$class_package_name = $::web::params::package_name,
+$class_service_name = $::web::params::servicename,
+$class_server_ip = $::web::params::server_ip,
+) inherits ::web::params {
 class {'web::install' :}
+class {'web::dircreate' :}
+class {'web::webconf' :}
 class {'web::deploy' :}
 class {'web::service' :}
-      
-	  }
 
+Class['web::install'] -> Class['web::dircreate']-> Class['web::webconf'] -> Class['web::deploy'] -> Class['web::service']      
+notify {hiera('secret'): }
 
-
+}
